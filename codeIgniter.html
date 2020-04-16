@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+    <title>CodeIgniter</title>
+    <script src="jquery-3.4.1.min.js"></script>
+    <link rel="icon" href="fire.png" type="image/png">
+
+
+    <style>
+        * {
+            font-family: "Roboto";
+            padding: 0;
+            margin: 0;
+        }
+        
+        #header {
+            background: rgb(0, 0, 0);
+            background: linear-gradient(90deg, rgba(0, 0, 0, 1) 14%, rgba(207, 40, 24, 1) 34%, rgba(253, 181, 29, 1) 95%, rgba(252, 176, 69, 1) 100%);
+            height: 50px;
+        }
+        
+        .toggleButton {
+            float: left;
+            border: 1px solid black;
+            border-right: none;
+            padding: 7px;
+        }
+        
+        #siteLogo {
+            float: left;
+            width: 40px;
+            padding-top: 4px;
+            padding-left: 4px;
+        }
+        
+        #buttonContainer {
+            width: 247px;
+            margin: 0 auto;
+            padding: 7px;
+        }
+        
+        #htmlButton {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        #outputButton {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-right: 1px solid black;
+        }
+        
+        .hover {
+            background: rgb(255, 136, 0);
+            background: linear-gradient(0deg, rgba(255, 136, 0, 1) 0%, rgba(253, 187, 45, 1) 100%);
+        }
+        
+        .active {
+            background: rgb(226, 88, 17);
+            background: linear-gradient(0deg, rgba(226, 88, 17, 1) 0%, rgba(253, 187, 45, 1) 100%);
+        }
+        
+        .inputPanel {
+            border-right: 2px solid #cec4c4;
+            float: left;
+        }
+        
+        textarea {
+            border: none;
+            resize: none;
+        }
+        
+        iframe {
+            border: none;
+            background-color: lime;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <img src="fireBig.png" id="siteLogo">
+        <!--All buttons are here-->
+        <div id="buttonContainer">
+            <div class="toggleButton" id="htmlButton">HTML</div>
+            <div class="toggleButton" id="cssButton">CSS</div>
+            <div class="toggleButton" id="javascriptButton">JavaScript</div>
+            <div class="toggleButton" id="outputButton">Output</div>
+        </div>
+    </div>
+    <!--Here we create the text areas that will update the output, and the output itself-->
+    <div id="input-container">
+        <textarea id="htmlPanel" class="inputPanel">Hello world!</textarea>
+        <textarea id="cssPanel" class="inputPanel">.p {font-color: green;}</textarea>
+        <textarea id="javascriptPanel" class="inputPanel">
+            <p>alert("This is a test")</p>
+        </textarea>
+        <iframe id="outputPanel" class="inputPanel"></iframe>
+
+        </iframe>
+    </div>
+    <!--All jquery and javascript goes here-->
+    <script type="text/javascript">
+        $("#htmlButton").addClass("active");
+        $("#outputButton").addClass("active");
+        $("#cssPanel").addClass("hidden");
+        $("#javascriptPanel").addClass("hidden");
+
+        //Variável usada para ajuste das larguras dos inputPanel
+        var numOfHiddenObjects = $(".hidden").length;
+
+        //Função para fazer update da tela.
+        function updateScreen() {
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+
+
+            $(".inputPanel").css("height", windowHeight - $("#header").height());
+            $(".inputPanel").css("width", windowWidth / (4 - numOfHiddenObjects) - 2);
+        };
+        //Listener para responsividade dos butões
+        $(".toggleButton").hover(function() {
+            $(this).addClass("hover");
+        }, function() {
+            $(this).removeClass("hover");
+        });
+
+        $(".toggleButton").click(function() {
+            $(this).toggleClass("active")
+        });
+
+        //Listener para chamar atualização da tela quando necessário
+        $(window).resize(function() {
+            updateScreen();
+        });
+
+        updateScreen();
+
+        $("iframe").contents().find('html').html('Hi');
+    </script>
+
+</body>
+
+</html>
