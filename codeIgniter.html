@@ -26,6 +26,7 @@
             border: 1px solid black;
             border-right: none;
             padding: 7px;
+            cursor: pointer;
         }
         
         #siteLogo {
@@ -65,6 +66,8 @@
         .inputPanel {
             border-right: 2px solid #cec4c4;
             float: left;
+            margin: 0;
+            padding: 0;
         }
         
         textarea {
@@ -74,9 +77,7 @@
         
         iframe {
             border: none;
-            background-color: lime;
-            padding: 0;
-            margin: 0;
+            /*background-color: lightgray;*/
         }
         
         .hidden {
@@ -98,35 +99,38 @@
     </div>
     <!--Here we create the text areas that will update the output, and the output itself-->
     <div id="input-container">
-        <textarea id="htmlPanel" class="inputPanel">Hello world!</textarea>
+        <textarea id="htmlPanel" class="inputPanel">Hellor World!</textarea>
         <textarea id="cssPanel" class="inputPanel">.p {font-color: green;}</textarea>
         <textarea id="javascriptPanel" class="inputPanel">
-            <p>alert("This is a test")</p>
+            alert("This is a test")
         </textarea>
         <iframe id="outputPanel" class="inputPanel"></iframe>
-
         </iframe>
     </div>
+
+
     <!--All jquery and javascript goes here-->
     <script type="text/javascript">
+        //Ajustes iniciais da tela ao carregar
         $("#htmlButton").addClass("active");
         $("#outputButton").addClass("active");
         $("#cssPanel").addClass("hidden");
         $("#javascriptPanel").addClass("hidden");
-
         //Variável usada para ajuste das larguras dos inputPanel
         var numOfHiddenObjects = $(".hidden").length;
 
         //Função para fazer update da tela.
         function updateScreen() {
+            numOfHiddenObjects = $(".hidden").length;
             var windowHeight = $(window).height();
             var windowWidth = $(window).width();
-
-
+            var numberOfVisibleObjects = 4 - numOfHiddenObjects;
             $(".inputPanel").css("height", windowHeight - $("#header").height());
             $(".inputPanel").css("width", windowWidth / (4 - numOfHiddenObjects) - 2);
         };
-        //Listener para responsividade dos butões
+
+        //Listeners para responsividade dos butões
+        //HOVER
         $(".toggleButton").hover(function() {
             $(this).addClass("hover");
         }, function() {
@@ -134,17 +138,54 @@
         });
 
         $(".toggleButton").click(function() {
-            $(this).toggleClass("active")
+            $(this).toggleClass("active");
+
+        });
+        //CLICK
+        $("#htmlButton").click(function() {
+            $("#htmlPanel").toggleClass("hidden");
+            updateScreen();
         });
 
-        //Listener para chamar atualização da tela quando necessário
+        $("#cssButton").click(function() {
+            $("#cssPanel").toggleClass("hidden");
+            updateScreen();
+        });
+
+        $("#javascriptButton").click(function() {
+            $("#javascriptPanel").toggleClass("hidden");
+            updateScreen();
+        });
+        $("#outputButton").click(function() {
+            $("#outputPanel").toggleClass("hidden");
+            updateScreen();
+        });
+
+        //Listener para chamar atualização da tela quando a tela muda de tamanho.
         $(window).resize(function() {
             updateScreen();
         });
 
-        updateScreen();
+        function updateOutput() {
+            //action to be performed on textarea changed
+            $("iframe").contents().find('html').html("<html><head><style type='text/css'>" + $("#cssPanel").val() + "</style></head><body>" + $('#htmlPanel').val() + "</body></html>");
 
-        $("iframe").contents().find('html').html('Hi');
+            var ifrm = document.getElementsByTagName('iframe')[0],
+                iwind = ifrm.contentWindow;
+            iwind.eval($("#javascriptPanel").val());
+        };
+
+
+        //Atualiza o iframe quando se altera o texto dos painéis.
+        $("#htmlPanel, #cssPanel", "#javascriptPanel").on("change keyup paste", function() {
+            updateOutput();
+        });
+
+        $("iframe").on("load", function() {
+            updateOutput();
+            updateScreen();
+        })
+        updateScreen();
     </script>
 
 </body>
